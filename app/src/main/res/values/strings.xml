@@ -17,5 +17,14 @@
     <string name="sign_up_confirm_password">Confirm Password</string>
     <string name="logo">logo</string>
     <string name="have_account">Already have an account?</string>
+    <string name="logout">Log Out</string>
+    <string name="Deactivate">Deactivate</string>
+    <string name="edit_btn">Edit</string>
+    <string name="payment_history">Order Tracking</string>
+    <string name="cart">My Cart</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="purchase">purchase</string>
+    <string name="browse">Browse Items</string>
 
 </resources>
