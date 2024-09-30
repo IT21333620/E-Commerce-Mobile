@@ -1,3 +1,44 @@
 <resources>
     <string name="app_name">E-Commerce Mobile</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in </string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="sign_up">Or Create a new account</string>
+    <string name="sign_up_name">Name</string>
+    <string name="sign_up_email">Email</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_confirm_password">Confirm Password</string>
+    <string name="logo">logo</string>
+    <string name="have_account">Already have an account?</string>
+    <string name="logout">Log Out</string>
+    <string name="Deactivate">Deactivate</string>
+    <string name="edit_btn">Edit</string>
+    <string name="payment_history">Order Tracking</string>
+    <string name="cart">My Cart</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="purchase">purchase</string>
+    <string name="browse">Browse Items</string>
+    <string name="itemTitle">Item Title</string>
+    <string name="itemPrice">Item Price</string>
+    <string name="itemRating">Item Rating</string>
+    <string name="itemVendor">Vendor</string>
+    <string name="category">Category</string>
+    <string name="orderID">Order ID</string>
+    <string name="orderStatus">Order Status</string>
+    <string name="orderDate">Order Date</string>
+    <string name="orderTotal">Total Amount</string>
+    <string name="quantity">Quantity</string>
+    <string name="unitPrice">Unit Price</string>
+    <string name="checkOut">Check Out</string>
+    <string name="cardNumber">Card Number</string>
+    <string name="expireDate">Expire Date</string>
+    <string name="cvv">CVV</string>
+
 </resources>
