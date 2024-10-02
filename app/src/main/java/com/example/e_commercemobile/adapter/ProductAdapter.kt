@@ -40,6 +40,8 @@ class ProductAdapter(private val ProductList: ArrayList<Product>)
         holder.productVendor.text = product.vendorName
         holder.productCategory.text = product.categoryName
 
-
+//        holder.itemView.setOnClickListener {
+//            listener.onProductClick(product)
+//        }
     }
 }
