@@ -13,6 +13,8 @@ import com.example.e_commercemobile.data.model.Product
 class ProductAdapter(private val ProductList: ArrayList<Product>)
     : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
+        var onItemClick : ((Product) -> Unit)? = null
+
     class ProductViewHolder (itemView: View): RecyclerView.ViewHolder(itemView){
         val productImg: ImageView = itemView.findViewById(R.id.ProductImg)
         val productTitle : TextView = itemView.findViewById(R.id.ProductTitle)
@@ -40,8 +42,8 @@ class ProductAdapter(private val ProductList: ArrayList<Product>)
         holder.productVendor.text = product.vendorName
         holder.productCategory.text = product.categoryName
 
-//        holder.itemView.setOnClickListener {
-//            listener.onProductClick(product)
-//        }
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(product)
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.e_commercemobile.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -54,6 +55,18 @@ class category : Fragment() {
 
         adapter = ProductAdapter(productList)
         recyclerView.adapter = adapter
+
+        adapter.onItemClick = {
+            val fragment = SingleProductView()
+            val bundle = Bundle()
+            bundle.putString("product_id", it.id)
+            fragment.arguments = bundle
+            val fragmentManager = parentFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragmentContainerView, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        }
 
 
         return view

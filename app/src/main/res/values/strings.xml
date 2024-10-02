@@ -44,5 +44,6 @@
     <string name="plus">+</string>
     <string name="minus">-</string>
     <string name="one">1</string>
+    <string name="addToCart">Add to Cart</string>
 
 </resources>

@@ -3,8 +3,14 @@ package com.example.e_commercemobile.api
 import com.example.e_commercemobile.data.model.Product
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ProductApi {
     @GET("api/product")
     fun getProducts(): Call<List<Product>>
+
+    @GET("api/product/{id}")
+    fun getProductById(@Path("id") id:String): Call<Product>
+
+
 }
