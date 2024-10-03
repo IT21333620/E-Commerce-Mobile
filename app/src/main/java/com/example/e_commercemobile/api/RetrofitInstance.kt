@@ -13,4 +13,12 @@ object RetrofitInstance {
             .build()
             .create(ProductApi::class.java)
     }
+
+    val authApi: AuthApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AuthApi::class.java)
+    }
 }
