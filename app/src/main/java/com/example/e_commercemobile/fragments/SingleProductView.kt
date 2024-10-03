@@ -1,5 +1,7 @@
 package com.example.e_commercemobile.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,6 +14,8 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.e_commercemobile.R
 import com.example.e_commercemobile.api.RetrofitInstance
+import com.example.e_commercemobile.data.model.AddToCartRequest
+import com.example.e_commercemobile.data.model.OrderItem
 import com.example.e_commercemobile.data.model.Product
 
 class SingleProductView : Fragment() {
@@ -43,6 +47,10 @@ class SingleProductView : Fragment() {
         val itemCount = view.findViewById<TextView>(R.id.itemQuantityText)
         val addToCartBtn = view.findViewById<TextView>(R.id.addToCartBtn)
 
+        // Get user id
+        val userID = getUserID(requireContext())
+
+        // Fetch product by id
         val call = RetrofitInstance.api.getProductById(productId!!)
         call.enqueue(object : retrofit2.Callback<Product> {
             override fun onResponse(call: retrofit2.Call<Product>, response: retrofit2.Response<Product>) {
@@ -68,6 +76,7 @@ class SingleProductView : Fragment() {
             }
         })
 
+        // Handle add and remove item count
         add.setOnClickListener {
             var count = itemCount.text.toString().toInt()
             count++
@@ -82,17 +91,50 @@ class SingleProductView : Fragment() {
             itemCount.text = count.toString()
         }
 
+        // Handle add to cart
         addToCartBtn.setOnClickListener {
             // Add to cart
-            val toast = Toast.makeText(requireContext(), "Item Added to cart", Toast.LENGTH_SHORT)
-            toast.show()
+
+            if(itemCount.text.toString().toInt() == 0){
+                val toast = Toast.makeText(requireContext(), "Please add item to cart", Toast.LENGTH_SHORT)
+                toast.show()
+                return@setOnClickListener
+            }
+
+            val cart = AddToCartRequest(
+                productId = productId!!,
+                quantity = itemCount.text.toString().toInt(),
+                userId = userID!!
+            )
+
+            val call = RetrofitInstance.api.addProduct(cart)
+            call.enqueue(object : retrofit2.Callback<OrderItem> {
+                override fun onResponse(call: retrofit2.Call<OrderItem>, response: retrofit2.Response<OrderItem>) {
+                    if (response.isSuccessful) {
+                        val products = response.body()
+                        Log.i("CategoryFragment", "Response Body: $products")
+
+                        val toast = Toast.makeText(requireContext(), "Item Added to cart", Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<OrderItem>, t: Throwable) {
+                    println("Error: ${t.message}")
+                }
+            })
+
+
+
         }
 
-
-
-
-
         return view
+    }
+
+    // Get user id from shared preferences
+    fun getUserID(context: Context): String? {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("USER_ID", null)
     }
 
 }

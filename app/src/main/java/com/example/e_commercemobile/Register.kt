@@ -61,6 +61,7 @@ class Register : AppCompatActivity() {
                 val call = RetrofitInstance.authApi.Register(registerRequest)
                 call.enqueue(object : retrofit2.Callback<LoggedInUser> {
                     override fun onResponse(call: retrofit2.Call<LoggedInUser>, response: retrofit2.Response<LoggedInUser>) {
+                        Log.i("CategoryFragment", "Response Body: ${response.code()}")
                         if (response.isSuccessful) {
                             val registerDetails = response.body()
                             Log.i("CategoryFragment", "Response Body: $registerDetails")

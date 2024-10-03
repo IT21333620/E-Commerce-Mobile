@@ -5,8 +5,9 @@ package com.example.e_commercemobile.data.model
  */
 data class LoggedInUser(
     val id: String,
-    val name: String,
-    val email: String,
+    var name: String,
+    var email: String,
+    var password: String,
     val role: String,
     val active_status: Boolean
 )

@@ -31,10 +31,8 @@ class category : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         productList = ArrayList()
-//        productList.add(Product("1", "Product 1", "Description 1", 100.00,20, "https://via.placeholder.com/150", "Food", "Ashen"))
-//        productList.add(Product("2", "Product 2", "Description 2", 200.00,20, "https://via.placeholder.com/150", "Food", "Ashen"))
 
-
+        // Fetch products from the API
         val call = RetrofitInstance.api.getProducts()
         call.enqueue(object : retrofit2.Callback<List<Product>> {
             override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
@@ -56,6 +54,7 @@ class category : Fragment() {
         adapter = ProductAdapter(productList)
         recyclerView.adapter = adapter
 
+        // Handle item click
         adapter.onItemClick = {
             val fragment = SingleProductView()
             val bundle = Bundle()

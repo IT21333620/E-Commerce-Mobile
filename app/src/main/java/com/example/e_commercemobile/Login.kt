@@ -1,6 +1,8 @@
 package com.example.e_commercemobile
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -29,14 +31,16 @@ class Login : AppCompatActivity() {
         login = findViewById(R.id.login)
         signUp = findViewById(R.id.signupBtn)
 
+        //Redirect to Register Activity
         signUp.setOnClickListener {
-            Toast.makeText(this, "Redirecting to Sign Up", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@Login, Register::class.java)
             startActivity(intent)
         }
 
+        //Login Button
         login.setOnClickListener {
 
+            // Check if username and password are empty
             if (username.text.toString().isEmpty()) {
                 username.error = "Please enter username"
                 return@setOnClickListener
@@ -47,6 +51,7 @@ class Login : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Make a login request
             val loginRequest = LoginRequest(username.text.toString(), password.text.toString())
 
             val call = RetrofitInstance.authApi.Login(loginRequest)
@@ -57,6 +62,7 @@ class Login : AppCompatActivity() {
                         Log.i("CategoryFragment", "Response Body: $loginDetails")
 
                         if (loginDetails != null) {
+                            // Check if account is active
                             if(loginDetails.active_status) {
                                 Toast.makeText(
                                     this@Login,
@@ -66,6 +72,7 @@ class Login : AppCompatActivity() {
                                 return
 
                             } else {
+                                // Check if user is a customer
                                 if (loginDetails.role == "Customer") {
                                     Toast.makeText(
                                         this@Login,
@@ -73,9 +80,13 @@ class Login : AppCompatActivity() {
                                         Toast.LENGTH_SHORT
                                     )
                                         .show()
+                                    // Save user ID in shared preferences
+                                    saveUserID(this@Login, loginDetails.id)
+
                                     // Redirect to MainActivity
                                     val intent = Intent(this@Login, MainActivity::class.java)
                                     startActivity(intent)
+
                                 } else {
                                     Toast.makeText(
                                         this@Login,
@@ -96,5 +107,13 @@ class Login : AppCompatActivity() {
             })
 
         }
+    }
+
+    // Save user ID in shared preferences
+    fun saveUserID(context: Context, userID: String) {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString("USER_ID", userID)
+        editor.apply()
     }
 }
