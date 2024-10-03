@@ -7,5 +7,6 @@ data class LoggedInUser(
     val id: String,
     val name: String,
     val email: String,
-    val role: String
+    val role: String,
+    val active_status: Boolean
 )

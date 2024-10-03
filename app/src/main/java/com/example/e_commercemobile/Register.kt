@@ -66,8 +66,10 @@ class Register : AppCompatActivity() {
                             Log.i("CategoryFragment", "Response Body: $registerDetails")
 
                             if (registerDetails != null) {
-                                val toast = Toast.makeText(applicationContext, "Registration Successful", Toast.LENGTH_SHORT)
+                                val toast = Toast.makeText(applicationContext, "Registration Successful Account needed to be activate by the admin", Toast.LENGTH_SHORT)
                                 toast.show()
+                                val intent = Intent(this@Register, Login::class.java)
+                                startActivity(intent)
                             }
                         }
                     }
@@ -77,9 +79,6 @@ class Register : AppCompatActivity() {
                     }
                 })
 
-
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
             } else {
                 val toast = Toast.makeText(applicationContext, "Passwords do not match", Toast.LENGTH_SHORT)
                 toast.show()

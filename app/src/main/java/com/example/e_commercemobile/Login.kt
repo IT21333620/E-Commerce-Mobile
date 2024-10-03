@@ -57,14 +57,32 @@ class Login : AppCompatActivity() {
                         Log.i("CategoryFragment", "Response Body: $loginDetails")
 
                         if (loginDetails != null) {
-                            if(loginDetails.role == "Customer") {
-                                Toast.makeText(this@Login, "Login Successfully", Toast.LENGTH_SHORT)
-                                    .show()
-                                // Redirect to MainActivity
-                                val intent = Intent(this@Login, MainActivity::class.java)
-                                startActivity(intent)
+                            if(loginDetails.active_status) {
+                                Toast.makeText(
+                                    this@Login,
+                                    "Account is not active",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return
+
                             } else {
-                                Toast.makeText(this@Login, "Only Customers are allowed to login", Toast.LENGTH_SHORT).show()
+                                if (loginDetails.role == "Customer") {
+                                    Toast.makeText(
+                                        this@Login,
+                                        "Login Successfully",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                    // Redirect to MainActivity
+                                    val intent = Intent(this@Login, MainActivity::class.java)
+                                    startActivity(intent)
+                                } else {
+                                    Toast.makeText(
+                                        this@Login,
+                                        "Only Customers are allowed to login",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }
                     } else {
