@@ -17,6 +17,7 @@ import com.example.e_commercemobile.R
 import com.example.e_commercemobile.Register
 import com.example.e_commercemobile.api.RetrofitInstance
 import com.example.e_commercemobile.data.model.LoggedInUser
+import okhttp3.ResponseBody
 import kotlin.math.log
 
 
@@ -112,8 +113,8 @@ class profile : Fragment() {
 
         deactivateBtn.setOnClickListener {
             val deactivateCall = RetrofitInstance.authApi.deactivateUser(userID)
-            deactivateCall.enqueue(object : retrofit2.Callback<String> {
-                override fun onResponse(call: retrofit2.Call<String>, response: retrofit2.Response<String>) {
+            deactivateCall.enqueue(object : retrofit2.Callback<ResponseBody> {
+                override fun onResponse(call: retrofit2.Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
                     Log.i("ProfileFragment", "Response Code: ${response.code()}")
                     if (response.isSuccessful) {
                         Log.i("ProfileFragment", "Deactivation successful")
@@ -126,7 +127,7 @@ class profile : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: retrofit2.Call<String>, t: Throwable) {
+                override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
                     Log.e("ProfileFragment", "Error: ${t.message}")
                     Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_LONG).show()
                 }

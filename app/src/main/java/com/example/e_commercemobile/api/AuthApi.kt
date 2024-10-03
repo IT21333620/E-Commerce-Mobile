@@ -3,6 +3,7 @@ package com.example.e_commercemobile.api
 import com.example.e_commercemobile.data.model.LoggedInUser
 import com.example.e_commercemobile.data.model.LoginRequest
 import com.example.e_commercemobile.data.model.RegisterRequest
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -36,5 +37,5 @@ interface AuthApi {
     @PUT("api/User/status/{id}")
     fun deactivateUser(
         @Path("id") id: String
-    ): Call<String>
+    ): Call<ResponseBody>
 }
