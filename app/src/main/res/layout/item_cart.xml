@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="240dp"
+    android:layout_height="150dp"
     android:backgroundTint="@color/accent"
     app:cardElevation="4dp"
     app:cardCornerRadius="16dp"
@@ -30,14 +30,15 @@
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
             android:layout_marginTop="20dp"
             android:text="@string/quantity"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@+id/cartItemName"
-            tools:layout_editor_absoluteX="160dp" />
+            app:layout_constraintStart_toEndOf="@+id/checkBox"
+            app:layout_constraintTop_toBottomOf="@+id/cartItemName" />
 
     <TextView
-        android:id="@+id/textView18"
+        android:id="@+id/cartQuantityText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -51,58 +52,42 @@
             android:id="@+id/textView19"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
             android:layout_marginTop="20dp"
-            android:text="@string/unitPrice"
+            android:text="@string/price"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@+id/textView17"
-            tools:layout_editor_absoluteX="160dp" />
-
-    <TextView
-        android:id="@+id/textView20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
-        android:text="TextView"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/textView19"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+            app:layout_constraintStart_toEndOf="@+id/checkBox"
+            app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
         <TextView
-            android:id="@+id/textView21"
+            android:id="@+id/cartPriceText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
             android:layout_marginTop="20dp"
-            android:text="@string/itemVendor"
+            android:text="TextView"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@+id/textView19"
-            tools:layout_editor_absoluteX="160dp" />
-
-    <TextView
-        android:id="@+id/textView22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="20dp"
-        android:text="TextView"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/textView21"
-        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+            app:layout_constraintStart_toEndOf="@+id/textView19"
+            app:layout_constraintTop_toBottomOf="@+id/cartQuantityText" />
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CheckBox"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="96dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="56dp"
+            android:text="@string/select"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/cartItemRemove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/baseline_delete_forever_24"
-            tools:layout_editor_absoluteX="349dp"
-            tools:layout_editor_absoluteY="16dp" />
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_delete_forever_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

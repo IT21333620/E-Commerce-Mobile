@@ -45,5 +45,9 @@
     <string name="minus">-</string>
     <string name="one">1</string>
     <string name="addToCart">Add to Cart</string>
+    <string name="price">Price</string>
+    <string name="select">Select</string>
+    <string name="clearCart">Clear Cart</string>
+    <string name="total_price">Total Price</string>
 
 </resources>
