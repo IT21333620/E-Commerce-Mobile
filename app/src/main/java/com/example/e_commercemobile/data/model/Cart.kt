@@ -11,5 +11,6 @@ data class Cart(
     val quantity: Int,
     val price: Double,
     val readyStatus: Boolean,
-    val deliveredStatus: Boolean
+    val deliveredStatus: Boolean,
+    var isSelected: Boolean = false
 )
