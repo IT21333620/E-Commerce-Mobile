@@ -93,4 +93,9 @@ class CartAdapter(private val CartList: ArrayList<Cart>, private val onSelection
         }
         return totalPrice
     }
+
+    // Get selected items
+    fun getSelectedItems(): List<Cart> {
+        return CartList.filter { it.isSelected }
+    }
 }

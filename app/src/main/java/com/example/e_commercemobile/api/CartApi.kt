@@ -1,10 +1,13 @@
 package com.example.e_commercemobile.api
 
 import com.example.e_commercemobile.data.model.Cart
+import com.example.e_commercemobile.data.model.OrderRequest
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface CartApi {
@@ -16,5 +19,10 @@ interface CartApi {
     @DELETE("/api/ProductListing/{id}")
     fun deleteCartItem(
         @Path("id") id: String
+    ): Call<ResponseBody>
+
+    @POST("/api/Order")
+    fun addCartItem(
+        @Body orderRequest: OrderRequest
     ): Call<ResponseBody>
 }

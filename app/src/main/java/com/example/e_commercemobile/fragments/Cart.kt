@@ -74,7 +74,13 @@ class cart : Fragment() {
         checkOut = view.findViewById(R.id.checkOutFloatingBtn)
 
         checkOut.setOnClickListener{
+            val selectedItems = adapter.getSelectedItems()
             val fragment = CheckOut()
+
+            val bundle = Bundle()
+            bundle.putParcelableArrayList("selectedItems", ArrayList(selectedItems))
+            fragment.arguments = bundle
+
             val fragmentManager = activity?.supportFragmentManager
             val fragmentTransaction = fragmentManager?.beginTransaction()
             fragmentTransaction?.replace(R.id.fragmentContainerView, fragment)
