@@ -40,5 +40,14 @@
     <string name="cardNumber">Card Number</string>
     <string name="expireDate">Expire Date</string>
     <string name="cvv">CVV</string>
+    <string name="itemDescription">Description</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="one">1</string>
+    <string name="addToCart">Add to Cart</string>
+    <string name="price">Price</string>
+    <string name="select">Select</string>
+    <string name="clearCart">Clear Cart</string>
+    <string name="total_price">Total Price</string>
 
 </resources>
