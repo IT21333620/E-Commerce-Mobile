@@ -29,6 +29,7 @@ class category : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var autoComplete: AutoCompleteTextView
     private lateinit var clearFilter: TextView
+    private lateinit var categories: List<Category>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,13 +88,23 @@ class category : Fragment() {
         // Clear dropdown selection on button click
         clearFilter.setOnClickListener {
             autoComplete.setText("Select Category", false)
+            fetchProducts()
+        }
+
+        // Set item click listener for AutoCompleteTextView
+        autoComplete.setOnItemClickListener { parent, _, position, _ ->
+            val selectedCategory = parent.getItemAtPosition(position) as String
+            val categoryId = categories.find { it.categoryName == selectedCategory }?.id
+            if (categoryId != null) {
+                fetchProductsByCategory(categoryId)
+            }
         }
 
         return view
     }
 
     private fun fetchProducts() {
-        val call = RetrofitInstance.api.getProducts()
+        val call = RetrofitInstance.api.getProductFilters("","")
         call.enqueue(object : retrofit2.Callback<List<Product>> {
             override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
                 if (response.isSuccessful) {
@@ -136,7 +147,7 @@ class category : Fragment() {
                 response: retrofit2.Response<List<Category>>
             ) {
                 if (response.isSuccessful) {
-                    val categories = response.body() ?: emptyList()
+                    categories = response.body() ?: emptyList()
                     val categoryNames = categories.map { it.categoryName }
                     val adapter =
                         ArrayAdapter(requireContext(), R.layout.dropdown_item, categoryNames)
@@ -152,23 +163,24 @@ class category : Fragment() {
         })
     }
 
-    private fun filterByCategory(categoryName: String) {
-        val call = RetrofitInstance.api.getProductByCategory(categoryName)
-        call.enqueue(object : retrofit2.Callback<Product> {
-            override fun onResponse(call: retrofit2.Call<Product>, response: retrofit2.Response<Product>) {
+    private fun fetchProductsByCategory(categoryId: String) {
+        val call = RetrofitInstance.api.getProductFilters("", categoryId)
+        call.enqueue(object : retrofit2.Callback<List<Product>> {
+            override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
                 if (response.isSuccessful) {
-                    val product = response.body()
-                    if (product != null) {
-                        val filteredList = ArrayList<Product>()
-                        filteredList.add(product)
+                    val filteredList = response.body()?.let { ArrayList<Product>(it) }
+                    productList.clear()
+                    productList.addAll(response.body()!!)
+                    if (filteredList != null) {
                         adapter.setFilteredList(filteredList)
                     }
                 }
             }
 
-            override fun onFailure(call: retrofit2.Call<Product>, t: Throwable) {
-                Log.e("CategoryFragment", "Error: ${t.message}")
+            override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
+                println("Error: ${t.message}")
             }
         })
     }
+
 }

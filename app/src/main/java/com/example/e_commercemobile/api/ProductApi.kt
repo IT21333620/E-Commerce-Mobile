@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProductApi {
     @GET("api/product")
@@ -25,6 +26,9 @@ interface ProductApi {
     @GET("/api/Category")
     fun getCategories(): Call<List<Category>>
 
-    @GET("/api/Category/{id}")
-    fun getProductByCategory(@Path("id") id:String): Call<Product>
+    @GET("/api/Product/search")
+    fun getProductFilters(
+        @Query("productName") productName: String,
+        @Query("categoryId") categoryId: String
+    ): Call<List<Product>>
 }
