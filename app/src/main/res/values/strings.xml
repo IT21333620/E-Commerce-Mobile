@@ -57,5 +57,6 @@
         <item>Spanish</item>
         <item>Chinese</item>
     </string-array>
+    <string name="clearFilter">Clear Filter</string>
 
 </resources>

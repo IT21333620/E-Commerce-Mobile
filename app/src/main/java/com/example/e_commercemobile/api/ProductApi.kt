@@ -1,6 +1,7 @@
 package com.example.e_commercemobile.api
 
 import com.example.e_commercemobile.data.model.AddToCartRequest
+import com.example.e_commercemobile.data.model.Category
 import com.example.e_commercemobile.data.model.OrderItem
 import com.example.e_commercemobile.data.model.Product
 import retrofit2.Call
@@ -22,5 +23,8 @@ interface ProductApi {
     ): Call<OrderItem>
 
     @GET("/api/Category")
-    fun getCategories(): Call<List<String>>
+    fun getCategories(): Call<List<Category>>
+
+    @GET("/api/Category/{id}")
+    fun getProductByCategory(@Path("id") id:String): Call<Product>
 }
