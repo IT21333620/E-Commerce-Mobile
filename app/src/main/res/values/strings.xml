@@ -50,5 +50,12 @@
     <string name="clearCart">Clear Cart</string>
     <string name="total_price">Total Price</string>
     <string name="cancle_order">Cancle Order</string>
+    <string name="select_category">Select Category</string>
+    <string-array name="languages">
+        <item>English</item>
+        <item>French</item>
+        <item>Spanish</item>
+        <item>Chinese</item>
+    </string-array>
 
 </resources>

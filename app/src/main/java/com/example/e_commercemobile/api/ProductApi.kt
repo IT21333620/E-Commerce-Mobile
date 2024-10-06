@@ -21,4 +21,6 @@ interface ProductApi {
         @Body addToCartRequest : AddToCartRequest
     ): Call<OrderItem>
 
+    @GET("/api/Category")
+    fun getCategories(): Call<List<String>>
 }

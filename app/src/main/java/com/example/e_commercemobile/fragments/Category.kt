@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +24,7 @@ class category : Fragment() {
     private lateinit var productList: ArrayList<Product>
     private lateinit var adapter: ProductAdapter
     private lateinit var searchView: SearchView
+    private lateinit var autoComplete: AutoCompleteTextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +38,13 @@ class category : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         searchView = view.findViewById(R.id.searchView)
+        autoComplete = view.findViewById(R.id.autoCompleteTextView)
+
+        //fetch categories from the API
+        val languages = resources.getStringArray(R.array.languages)
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, languages)
+        autoComplete.setAdapter(arrayAdapter)
+
 
         productList = ArrayList()
         adapter = ProductAdapter(productList)
