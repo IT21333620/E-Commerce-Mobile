@@ -49,5 +49,6 @@
     <string name="select">Select</string>
     <string name="clearCart">Clear Cart</string>
     <string name="total_price">Total Price</string>
+    <string name="cancle_order">Cancle Order</string>
 
 </resources>

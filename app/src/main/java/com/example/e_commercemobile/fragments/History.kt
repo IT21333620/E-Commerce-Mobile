@@ -1,17 +1,24 @@
 package com.example.e_commercemobile.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.e_commercemobile.R
+import com.example.e_commercemobile.adapter.OrderAdapter
+import com.example.e_commercemobile.api.RetrofitInstance
+import com.example.e_commercemobile.data.model.OrderHistory
 
 class history : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+   private lateinit var recyclerView: RecyclerView
+   private lateinit var historyList: ArrayList<OrderHistory>
+   private lateinit var adapter: OrderAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,6 +28,42 @@ class history : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_history, container, false)
 
+        recyclerView = view.findViewById(R.id.histroyRecycleView)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        historyList = ArrayList()
+
+        // Get user id
+        val userID = getUserID(requireContext())
+
+        //Fetch order history from the API
+        val call = RetrofitInstance.cartApi.getOrderHistory(userID!!)
+        call.enqueue(object : retrofit2.Callback<List<OrderHistory>> {
+            override fun onResponse(call: retrofit2.Call<List<OrderHistory>>, response: retrofit2.Response<List<OrderHistory>>) {
+                if (response.isSuccessful) {
+                    val orderHistory = response.body()
+                    if (orderHistory != null) {
+                        historyList.addAll(orderHistory)
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<List<OrderHistory>>, t: Throwable) {
+                println("Error: ${t.message}")
+            }
+        })
+
+        adapter = OrderAdapter(historyList)
+        recyclerView.adapter = adapter
+
         return view
+    }
+
+    // Get user id from shared preferences
+    fun getUserID(context: Context): String? {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("USER_ID", null)
     }
 }
