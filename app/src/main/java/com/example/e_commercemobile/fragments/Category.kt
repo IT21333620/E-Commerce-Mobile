@@ -1,12 +1,13 @@
 package com.example.e_commercemobile.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_commercemobile.R
@@ -19,40 +20,27 @@ class category : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var productList: ArrayList<Product>
     private lateinit var adapter: ProductAdapter
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
+
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_category, container, false)
         recyclerView = view.findViewById(R.id.productRecyclerView)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        searchView = view.findViewById(R.id.searchView)
 
         productList = ArrayList()
-
-        // Fetch products from the API
-        val call = RetrofitInstance.api.getProducts()
-        call.enqueue(object : retrofit2.Callback<List<Product>> {
-            override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
-                if (response.isSuccessful) {
-                    val products = response.body()
-                    Log.i("CategoryFragment", "Response Body: $products")
-                    if (products != null) {
-                        productList.addAll(products)
-                        adapter.notifyDataSetChanged()
-                    }
-                }
-            }
-
-            override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
-                println("Error: ${t.message}")
-            }
-        })
-
         adapter = ProductAdapter(productList)
         recyclerView.adapter = adapter
+
+        // Fetch products from the API
+        fetchProducts()
 
         // Handle item click
         adapter.onItemClick = {
@@ -67,9 +55,54 @@ class category : Fragment() {
             fragmentTransaction.commit()
         }
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.i("CategoryFragment", "Query: $newText")
+                filterList(newText)
+                return true
+            }
+        })
 
         return view
     }
 
+    private fun fetchProducts() {
+        val call = RetrofitInstance.api.getProducts()
+        call.enqueue(object : retrofit2.Callback<List<Product>> {
+            override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
+                if (response.isSuccessful) {
+                    val filteredList = response.body()?.let { ArrayList<Product>(it) }
+                    productList.addAll(response.body()!!)
+                    if (filteredList != null) {
+                        adapter.setFilteredList(filteredList)
+                    }
+                }
+            }
 
+            override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
+                println("Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun filterList(query: String?) {
+        if (query != null) {
+            val filteredList = ArrayList<Product>()
+            for (product in productList) {
+                if (product.productName.lowercase().contains(query.lowercase())) {
+                    filteredList.add(product)
+                }
+            }
+
+            if (filteredList.isEmpty()) {
+                val toast = Toast.makeText(context, "No products found", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+            adapter.setFilteredList(filteredList)
+        }
+    }
 }

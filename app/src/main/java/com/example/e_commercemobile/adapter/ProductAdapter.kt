@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.e_commercemobile.R
 import com.example.e_commercemobile.data.model.Product
 
-class ProductAdapter(private val ProductList: ArrayList<Product>)
+class ProductAdapter(private var ProductList: ArrayList<Product>)
     : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
         var onItemClick : ((Product) -> Unit)? = null
@@ -45,5 +45,10 @@ class ProductAdapter(private val ProductList: ArrayList<Product>)
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(product)
         }
+    }
+
+    fun setFilteredList(filteredList: ArrayList<Product>){
+        this.ProductList = filteredList
+        notifyDataSetChanged()
     }
 }
