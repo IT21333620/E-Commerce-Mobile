@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_commercemobile.R
@@ -19,6 +20,7 @@ class history : Fragment() {
    private lateinit var recyclerView: RecyclerView
    private lateinit var historyList: ArrayList<OrderHistory>
    private lateinit var adapter: OrderAdapter
+   private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +33,7 @@ class history : Fragment() {
         recyclerView = view.findViewById(R.id.histroyRecycleView)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        progressBar = view.findViewById(R.id.progressBarHistory)
 
         historyList = ArrayList()
 
@@ -38,9 +41,11 @@ class history : Fragment() {
         val userID = getUserID(requireContext())
 
         //Fetch order history from the API
+        progressBar.visibility = View.VISIBLE
         val call = RetrofitInstance.cartApi.getOrderHistory(userID!!)
         call.enqueue(object : retrofit2.Callback<List<OrderHistory>> {
             override fun onResponse(call: retrofit2.Call<List<OrderHistory>>, response: retrofit2.Response<List<OrderHistory>>) {
+                progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val orderHistory = response.body()
                     if (orderHistory != null) {
@@ -52,6 +57,7 @@ class history : Fragment() {
 
             override fun onFailure(call: retrofit2.Call<List<OrderHistory>>, t: Throwable) {
                 println("Error: ${t.message}")
+                progressBar.visibility = View.GONE
             }
         })
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Filter
+import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +31,7 @@ class category : Fragment() {
     private lateinit var autoComplete: AutoCompleteTextView
     private lateinit var clearFilter: TextView
     private lateinit var categories: List<Category>
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +47,7 @@ class category : Fragment() {
         searchView = view.findViewById(R.id.searchView)
         autoComplete = view.findViewById(R.id.autoCompleteTextView)
         clearFilter = view.findViewById(R.id.clearFilter)
+        progressBar = view.findViewById(R.id.progressBar)
 
         //fetch categories from the API
 //        val languages = resources.getStringArray(R.array.languages)
@@ -104,9 +107,11 @@ class category : Fragment() {
     }
 
     private fun fetchProducts() {
+        progressBar.visibility = View.VISIBLE
         val call = RetrofitInstance.api.getProductFilters("","")
         call.enqueue(object : retrofit2.Callback<List<Product>> {
             override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
+                progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val filteredList = response.body()?.let { ArrayList<Product>(it) }
                     productList.addAll(response.body()!!)
@@ -117,6 +122,7 @@ class category : Fragment() {
             }
 
             override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
+                progressBar.visibility = View.GONE
                 println("Error: ${t.message}")
             }
         })
@@ -164,9 +170,11 @@ class category : Fragment() {
     }
 
     private fun fetchProductsByCategory(categoryId: String) {
+        progressBar.visibility = View.VISIBLE
         val call = RetrofitInstance.api.getProductFilters("", categoryId)
         call.enqueue(object : retrofit2.Callback<List<Product>> {
             override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
+                progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val filteredList = response.body()?.let { ArrayList<Product>(it) }
                     productList.clear()
@@ -179,6 +187,7 @@ class category : Fragment() {
 
             override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
                 println("Error: ${t.message}")
+                progressBar.visibility = View.GONE
             }
         })
     }
