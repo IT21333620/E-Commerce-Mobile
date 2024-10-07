@@ -1,17 +1,25 @@
 package com.example.e_commercemobile.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Filter
+import android.widget.ProgressBar
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.e_commercemobile.R
 import com.example.e_commercemobile.adapter.ProductAdapter
 import com.example.e_commercemobile.api.RetrofitInstance
+import com.example.e_commercemobile.data.model.Category
 import com.example.e_commercemobile.data.model.Product
 
 class category : Fragment() {
@@ -19,40 +27,41 @@ class category : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var productList: ArrayList<Product>
     private lateinit var adapter: ProductAdapter
+    private lateinit var searchView: SearchView
+    private lateinit var autoComplete: AutoCompleteTextView
+    private lateinit var clearFilter: TextView
+    private lateinit var categories: List<Category>
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
+
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_category, container, false)
         recyclerView = view.findViewById(R.id.productRecyclerView)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        searchView = view.findViewById(R.id.searchView)
+        autoComplete = view.findViewById(R.id.autoCompleteTextView)
+        clearFilter = view.findViewById(R.id.clearFilter)
+        progressBar = view.findViewById(R.id.progressBar)
+
+        //fetch categories from the API
+//        val languages = resources.getStringArray(R.array.languages)
+//        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, languages)
+//        autoComplete.setAdapter(arrayAdapter)
+
 
         productList = ArrayList()
-
-        // Fetch products from the API
-        val call = RetrofitInstance.api.getProducts()
-        call.enqueue(object : retrofit2.Callback<List<Product>> {
-            override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
-                if (response.isSuccessful) {
-                    val products = response.body()
-                    Log.i("CategoryFragment", "Response Body: $products")
-                    if (products != null) {
-                        productList.addAll(products)
-                        adapter.notifyDataSetChanged()
-                    }
-                }
-            }
-
-            override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
-                println("Error: ${t.message}")
-            }
-        })
-
         adapter = ProductAdapter(productList)
         recyclerView.adapter = adapter
+
+        // Fetch products from the API
+        fetchProducts()
+        fetchCategoryList()
 
         // Handle item click
         adapter.onItemClick = {
@@ -67,9 +76,120 @@ class category : Fragment() {
             fragmentTransaction.commit()
         }
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.i("CategoryFragment", "Query: $newText")
+                filterList(newText)
+                return true
+            }
+        })
+
+        // Clear dropdown selection on button click
+        clearFilter.setOnClickListener {
+            autoComplete.setText("Select Category", false)
+            fetchProducts()
+        }
+
+        // Set item click listener for AutoCompleteTextView
+        autoComplete.setOnItemClickListener { parent, _, position, _ ->
+            val selectedCategory = parent.getItemAtPosition(position) as String
+            val categoryId = categories.find { it.categoryName == selectedCategory }?.id
+            if (categoryId != null) {
+                fetchProductsByCategory(categoryId)
+            }
+        }
 
         return view
     }
 
+    private fun fetchProducts() {
+        progressBar.visibility = View.VISIBLE
+        val call = RetrofitInstance.api.getProductFilters("","")
+        call.enqueue(object : retrofit2.Callback<List<Product>> {
+            override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
+                progressBar.visibility = View.GONE
+                if (response.isSuccessful) {
+                    val filteredList = response.body()?.let { ArrayList<Product>(it) }
+                    productList.addAll(response.body()!!)
+                    if (filteredList != null) {
+                        adapter.setFilteredList(filteredList)
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
+                progressBar.visibility = View.GONE
+                println("Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun filterList(query: String?) {
+        if (query != null) {
+            val filteredList = ArrayList<Product>()
+            for (product in productList) {
+                if (product.productName.lowercase().contains(query.lowercase())) {
+                    filteredList.add(product)
+                }
+            }
+
+            if (filteredList.isEmpty()) {
+                val toast = Toast.makeText(context, "No products found", Toast.LENGTH_SHORT)
+                toast.show()
+            }
+            adapter.setFilteredList(filteredList)
+        }
+    }
+
+    private fun fetchCategoryList () {
+        val call = RetrofitInstance.api.getCategories()
+        call.enqueue(object : retrofit2.Callback<List<Category>> {
+            override fun onResponse(
+                call: retrofit2.Call<List<Category>>,
+                response: retrofit2.Response<List<Category>>
+            ) {
+                if (response.isSuccessful) {
+                    categories = response.body() ?: emptyList()
+                    val categoryNames = categories.map { it.categoryName }
+                    val adapter =
+                        ArrayAdapter(requireContext(), R.layout.dropdown_item, categoryNames)
+                    autoComplete.setAdapter(adapter)
+                } else {
+                    Log.e("CategoryFragment", "Failed to fetch categories: ${response.errorBody()}")
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<List<Category>>, t: Throwable) {
+                Log.e("CategoryFragment", "Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun fetchProductsByCategory(categoryId: String) {
+        progressBar.visibility = View.VISIBLE
+        val call = RetrofitInstance.api.getProductFilters("", categoryId)
+        call.enqueue(object : retrofit2.Callback<List<Product>> {
+            override fun onResponse(call: retrofit2.Call<List<Product>>, response: retrofit2.Response<List<Product>>) {
+                progressBar.visibility = View.GONE
+                if (response.isSuccessful) {
+                    val filteredList = response.body()?.let { ArrayList<Product>(it) }
+                    productList.clear()
+                    productList.addAll(response.body()!!)
+                    if (filteredList != null) {
+                        adapter.setFilteredList(filteredList)
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<List<Product>>, t: Throwable) {
+                println("Error: ${t.message}")
+                progressBar.visibility = View.GONE
+            }
+        })
+    }
 
 }

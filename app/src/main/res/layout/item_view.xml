@@ -102,6 +102,8 @@
             android:layout_marginStart="188dp"
             android:layout_marginBottom="16dp"
             android:contentDescription="@string/itemRating"
+            android:isIndicator="true"
+            android:progressTint="@color/dusk_Yellow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.888"

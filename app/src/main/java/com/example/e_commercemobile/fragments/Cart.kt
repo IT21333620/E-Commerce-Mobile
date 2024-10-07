@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +18,7 @@ import com.example.e_commercemobile.adapter.CartAdapter
 import com.example.e_commercemobile.api.RetrofitInstance
 import com.example.e_commercemobile.data.model.Cart
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import okhttp3.ResponseBody
 
 class cart : Fragment() {
 
@@ -24,6 +27,8 @@ class cart : Fragment() {
     private lateinit var cartITemsList: ArrayList<Cart>
     private lateinit var adapter: CartAdapter
     private lateinit var totalPriceTextView: TextView
+    private lateinit var cancleButton: Button
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +45,8 @@ class cart : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         totalPriceTextView = view.findViewById(R.id.totalPriceText)
+        cancleButton = view.findViewById(R.id.clearCartButton)
+        progressBar = view.findViewById(R.id.progressBarCart)
 
         cartITemsList = ArrayList()
 
@@ -47,9 +54,11 @@ class cart : Fragment() {
         val userID = getUserID(requireContext())
 
         // Fetch products from the API
+        progressBar.visibility = View.VISIBLE
         val call = RetrofitInstance.cartApi.getCartItems(userID!!)
         call.enqueue(object : retrofit2.Callback<List<Cart>> {
             override fun onResponse(call: retrofit2.Call<List<Cart>>, response: retrofit2.Response<List<Cart>>) {
+                progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val cartItems = response.body()
                     if (cartItems != null) {
@@ -62,6 +71,7 @@ class cart : Fragment() {
 
             override fun onFailure(call: retrofit2.Call<List<Cart>>, t: Throwable) {
                 println("Error: ${t.message}")
+                progressBar.visibility = View.GONE
             }
         })
 
@@ -88,6 +98,29 @@ class cart : Fragment() {
             fragmentTransaction?.commit()
         }
 
+        cancleButton.setOnClickListener {
+            val call = RetrofitInstance.cartApi.clearCart(userID!!)
+            call.enqueue(object : retrofit2.Callback<ResponseBody> {
+                override fun onResponse(
+                    call: retrofit2.Call<ResponseBody>,
+                    response: retrofit2.Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        cartITemsList.clear()
+                        adapter.notifyDataSetChanged()
+                        updateTotalPrice()
+
+                        val toast = Toast.makeText(requireContext(), "Cart cleared", Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
+                   val toast = Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT)
+                    toast.show()
+                }
+            })
+        }
 
         return view
     }

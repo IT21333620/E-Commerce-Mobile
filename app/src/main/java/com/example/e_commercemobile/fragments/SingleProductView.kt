@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -46,14 +48,18 @@ class SingleProductView : Fragment() {
         val remove = view.findViewById<ImageView>(R.id.removingCart)
         val itemCount = view.findViewById<TextView>(R.id.itemQuantityText)
         val addToCartBtn = view.findViewById<TextView>(R.id.addToCartBtn)
+        val ratingBar = view.findViewById<RatingBar>(R.id.ratingBar2)
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar2)
 
         // Get user id
         val userID = getUserID(requireContext())
 
         // Fetch product by id
+        progressBar.visibility = View.VISIBLE
         val call = RetrofitInstance.api.getProductById(productId!!)
         call.enqueue(object : retrofit2.Callback<Product> {
             override fun onResponse(call: retrofit2.Call<Product>, response: retrofit2.Response<Product>) {
+                progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val products = response.body()
                     Log.i("CategoryFragment", "Response Body: $products")
@@ -62,6 +68,7 @@ class SingleProductView : Fragment() {
                         itemPrice.text = it.unitPrice.toString()
                         itemVendor.text = it.vendorName
                         itemCategory.text = it.categoryName
+                        ratingBar.rating = it.rating.toFloat()
                         itemDescription.text = it.productDescription
                         Glide.with(requireContext())
                             .load(it.image)
@@ -73,6 +80,7 @@ class SingleProductView : Fragment() {
 
             override fun onFailure(call: retrofit2.Call<Product>, t: Throwable) {
                 println("Error: ${t.message}")
+                progressBar.visibility = View.GONE
             }
         })
 

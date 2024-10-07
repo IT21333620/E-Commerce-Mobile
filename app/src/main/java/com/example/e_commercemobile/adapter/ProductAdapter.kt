@@ -1,16 +1,18 @@
 package com.example.e_commercemobile.adapter
 
+import android.media.Rating
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.e_commercemobile.R
 import com.example.e_commercemobile.data.model.Product
 
-class ProductAdapter(private val ProductList: ArrayList<Product>)
+class ProductAdapter(private var ProductList: ArrayList<Product>)
     : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
         var onItemClick : ((Product) -> Unit)? = null
@@ -21,6 +23,7 @@ class ProductAdapter(private val ProductList: ArrayList<Product>)
         val productPrice : TextView = itemView.findViewById(R.id.ProductPrice)
         val productVendor : TextView = itemView.findViewById(R.id.ProductVendor)
         val productCategory : TextView = itemView.findViewById(R.id.ProductCategory)
+        val rating : RatingBar = itemView.findViewById(R.id.ratingBar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -41,9 +44,15 @@ class ProductAdapter(private val ProductList: ArrayList<Product>)
         holder.productPrice.text = product.unitPrice.toString()
         holder.productVendor.text = product.vendorName
         holder.productCategory.text = product.categoryName
+        holder.rating.rating = product.rating.toFloat()
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(product)
         }
+    }
+
+    fun setFilteredList(filteredList: ArrayList<Product>){
+        this.ProductList = filteredList
+        notifyDataSetChanged()
     }
 }
