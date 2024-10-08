@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ class history : Fragment() {
    private lateinit var historyList: ArrayList<OrderHistory>
    private lateinit var adapter: OrderAdapter
    private lateinit var progressBar: ProgressBar
+   private lateinit var imageView: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +36,8 @@ class history : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         progressBar = view.findViewById(R.id.progressBarHistory)
+        imageView = view.findViewById(R.id.notificationIcon)
+
 
         historyList = ArrayList()
 
@@ -63,6 +67,14 @@ class history : Fragment() {
 
         adapter = OrderAdapter(historyList)
         recyclerView.adapter = adapter
+
+        imageView.setOnClickListener{
+            val fragmentManager = activity?.supportFragmentManager
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.replace(R.id.fragmentContainerView, Notifications())
+            fragmentTransaction?.commit()
+        }
+
 
         return view
     }

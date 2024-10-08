@@ -1,6 +1,7 @@
 package com.example.e_commercemobile.api
 
 import com.example.e_commercemobile.data.model.Cart
+import com.example.e_commercemobile.data.model.Notification
 import com.example.e_commercemobile.data.model.OrderHistory
 import com.example.e_commercemobile.data.model.OrderRequest
 import okhttp3.ResponseBody
@@ -41,6 +42,17 @@ interface CartApi {
     @DELETE("/api/ProductListing/user/{userId}")
     fun clearCart(
         @Path("userId") userId: String
+    ): Call<ResponseBody>
+
+    @GET("/api/NotificationOrder/all/{id}")
+    fun getNotification(
+        @Path("id") id: String
+    ): Call<List<Notification>>
+
+    @PUT("/api/NotificationOrder/{id}")
+    fun markNotificationAsRead(
+        @Path("id") id: String,
+        @Body notification: Notification
     ): Call<ResponseBody>
 
 

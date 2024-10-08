@@ -58,5 +58,7 @@
         <item>Chinese</item>
     </string-array>
     <string name="clearFilter">Clear Filter</string>
+    <string name="make_as_read">Mark as read</string>
+    <string name="notifications">Notifications</string>
 
 </resources>
